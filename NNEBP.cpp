@@ -2,6 +2,8 @@
 #include <complex>
 #include <random>
 
+using namespace std;
+
 class NeuralNetwork {
 private:
     int i, j, k;
@@ -12,6 +14,7 @@ private:
 public:
     NeuralNetwork(int _i, int _j, int _k);
     void GetOutput(double input[], double output[]);
+    void PrintWeight();
     ~NeuralNetwork();
 };
 
@@ -56,6 +59,20 @@ void NeuralNetwork::GetOutput(double input[], double output[]) {
 
     for(int tk = 0; tk < k; tk++)
         output[tk] = getNeuronOutput(j, h_j, weight_kj[tk]);
+}
+
+void NeuralNetwork::PrintWeight() {
+    cout << "Weight_ji" << endl;
+    for(int tj = 0; tj < j; tj++)
+        for(int ti = 0; ti <= i; ti++)
+            cout << weight_ji[tj][ti] << " ";
+    cout << endl;
+
+    cout << "Weight_kj" << endl;
+    for(int tk = 0; tk < k; tk++)
+        for(int tj = 0; tj <= j; tj++)
+            cout << weight_kj[tk][tj] << " ";
+    cout << endl;
 }
 
 NeuralNetwork::~NeuralNetwork() {
