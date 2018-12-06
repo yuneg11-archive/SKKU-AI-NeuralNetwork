@@ -59,6 +59,8 @@ void NeuralNetwork::GetOutput(double input[], double output[]) {
 
     for(int tk = 0; tk < k; tk++)
         output[tk] = getNeuronOutput(j, h_j, weight_kj[tk]);
+
+    delete [] h_j;
 }
 
 void NeuralNetwork::PrintWeight() {
@@ -77,12 +79,12 @@ void NeuralNetwork::PrintWeight() {
 
 NeuralNetwork::~NeuralNetwork() {
     for(int tj = 0; tj < j; tj++)
-        delete weight_ji[tj];
-    delete weight_ji;
+        delete [] weight_ji[tj];
+    delete [] weight_ji;
 
     for(int tk = 0; tk < k; tk++)
-        delete weight_kj[tk];
-    delete weight_kj;
+        delete [] weight_kj[tk];
+    delete [] weight_kj;
 }
 
 int main() {
