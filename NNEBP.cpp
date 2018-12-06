@@ -8,9 +8,10 @@ private:
     double **weight_ji;
     double **weight_kj;
     double activation(double x);
-    double getNeuronOutput(int num, double input[], double weight[]);
+    double getNeuronOutput(int input_num, double input[], double weight[]);
 public:
     NeuralNetwork(int _i, int _j, int _k);
+    void GetOutput(double input[], double output[]);
     ~NeuralNetwork();
 };
 
@@ -37,14 +38,24 @@ double NeuralNetwork::activation(double x) {
     return 1 / (1 + exp(-x)); // Sigmoid
 }
 
-double NeuralNetwork::getNeuronOutput(int num, double input[], double weight[]) {
+double NeuralNetwork::getNeuronOutput(int input_num, double input[], double weight[]) {
     double net = 0;
 
-    for(int ti = 0; ti < num; ti++)
+    for(int ti = 0; ti < input_num; ti++)
         net += input[ti] * weight[ti];
-    net += weight[num];
+    net += weight[input_num];
 
     return activation(net);
+}
+
+void NeuralNetwork::GetOutput(double input[], double output[]) {
+    double *h_j = new double[j];
+
+    for(int tj = 0; tj < j; tj++)
+        h_j[tj] = getNeuronOutput(i, input, weight_ji[tj]);
+
+    for(int tk = 0; tk < k; tk++)
+        output[tk] = getNeuronOutput(j, h_j, weight_kj[tk]);
 }
 
 NeuralNetwork::~NeuralNetwork() {
