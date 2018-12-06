@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cmath>
+#include <complex>
 #include <random>
 
 class NeuralNetwork {
@@ -7,6 +7,7 @@ private:
     int i, j, k;
     double **weight_ji;
     double **weight_kj;
+    double activation(double x);
 public:
     NeuralNetwork(int _i, int _j, int _k);
     ~NeuralNetwork();
@@ -29,6 +30,10 @@ NeuralNetwork::NeuralNetwork(int _i, int _j, int _k): i(_i), j(_j), k(_k) {
         for(int tj = 0; tj < j; tj++)
             weight_kj[tk][tj] = distribution(generator);
     }
+}
+
+double NeuralNetwork::activation(double x) {
+    return 1 / (1 + exp(-x)); // Sigmoid
 }
 
 NeuralNetwork::~NeuralNetwork() {
