@@ -14,6 +14,7 @@ private:
 public:
     NeuralNetwork(int _i, int _j, int _k);
     void GetOutput(double input[], double output[]);
+    void SetWeight(double **_weight_ji, double **_weight_kj);
     void PrintWeight();
     ~NeuralNetwork();
 };
@@ -75,6 +76,16 @@ void NeuralNetwork::PrintWeight() {
         for(int tj = 0; tj <= j; tj++)
             cout << weight_kj[tk][tj] << " ";
     cout << endl;
+}
+
+void NeuralNetwork::SetWeight(double **_weight_ji, double **_weight_kj) {
+    for(int tj = 0; tj < j; tj++)
+            for(int ti = 0; ti <= i; ti++)
+                weight_ji[tj][ti] = _weight_ji[tj][ti];
+
+    for(int tk = 0; tk < k; tk++)
+            for(int tj = 0; tj <= j; tj++)
+                weight_kj[tk][tj] = _weight_kj[tk][tj];
 }
 
 NeuralNetwork::~NeuralNetwork() {
