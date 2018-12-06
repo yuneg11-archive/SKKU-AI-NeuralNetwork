@@ -16,6 +16,8 @@ public:
     void GetOutput(double input[], double output[]);
     void SetWeight(double **_weight_ji, double **_weight_kj);
     void PrintWeight();
+    void TrainNetwork(int data_num, double **input_n, double **output_n,
+                      double learning_rate, int iteration);
     ~NeuralNetwork();
 };
 
@@ -79,6 +81,79 @@ void NeuralNetwork::PrintWeight() {
         for(int tj = 0; tj <= j; tj++)
             cout << weight_kj[tk][tj] << " ";
     cout << endl;
+}
+
+void NeuralNetwork::TrainNetwork(int n, double **input_n, double **output_n,
+                                 double learning_rate, int iteration) {
+    double **dEdw_ji = new double*[j];
+    for(int tj = 0; tj < j; tj++)
+        dEdw_ji[tj] = new double[i+1];
+
+    double **dEdw_kj = new double*[k];
+    for(int tk = 0; tk < k; tk++)
+        dEdw_kj[tk] = new double[j+1];
+
+    double *h_j = new double[j];
+    double *o_k = new double[k];
+    double *tmoo1mo = new double[k]; // Common part (t_k-o_k)o_k(1-o_k)
+
+    for(int iter = 1; iter <= iteration; iter++) {
+        for(int tj = 0; tj < j; tj++)
+            for(int ti = 0; ti <= i; ti++)
+                dEdw_ji[tj][ti] = 0;
+
+        for(int tk = 0; tk < k; tk++)
+            for(int tj = 0; tj <= j; tj++)
+                dEdw_kj[tk][tj] = 0;
+
+        for(int tn = 0; tn < n; tn++) {
+            // Feed Forward
+            for(int tj = 0; tj < j; tj++)
+                h_j[tj] = getNeuronOutput(i, input_n[tn], weight_ji[tj]);
+
+            for(int tk = 0; tk < k; tk++)
+                o_k[tk] = getNeuronOutput(j, h_j, weight_kj[tk]);
+
+            // Error Back Propagation
+            for(int tk = 0; tk < k; tk++) {
+                tmoo1mo[tk] = (output_n[tn][tk] - o_k[tk]) * o_k[tk] * (1 - o_k[tk]);
+                for(int tj = 0; tj < j; tj++)
+                    dEdw_kj[tk][tj] += -tmoo1mo[tk] * h_j[tj];
+                dEdw_kj[tk][j] += -tmoo1mo[tk];
+            }
+
+            for(int tj = 0; tj < j; tj++) {
+                double sum = 0;
+                for(int tk = 0; tk < k; tk++)
+                    sum += weight_kj[tk][tj] * tmoo1mo[tk];
+
+                for(int ti = 0; ti < i; ti++)
+                    dEdw_ji[tj][ti] += -input_n[tn][ti] * h_j[tj] * (1 - h_j[tj]) * sum;
+                dEdw_ji[tj][i] += -1 * h_j[tj] * (1 - h_j[tj]) * sum;
+            }
+        }
+
+        // Update Weight
+        for(int tj = 0; tj < j; tj++)
+            for(int ti = 0; ti <= i; ti++)
+                weight_ji[tj][ti] -= learning_rate * dEdw_ji[tj][ti];
+
+        for(int tk = 0; tk < k; tk++)
+            for(int tj = 0; tj <= j; tj++)
+                weight_kj[tk][tj] -= learning_rate * dEdw_kj[tk][tj];
+    }
+
+    delete [] tmoo1mo;
+    delete [] o_k;
+    delete [] h_j;
+
+    for(int tk = 0; tk < k; tk++)
+        delete [] dEdw_kj[tk];
+    delete [] dEdw_kj;
+
+    for(int tj = 0; tj < j; tj++)
+        delete [] dEdw_ji[tj];
+    delete [] dEdw_ji;
 }
 
 void NeuralNetwork::SetWeight(double **_weight_ji, double **_weight_kj) {
