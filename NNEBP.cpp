@@ -20,8 +20,8 @@ public:
 };
 
 NeuralNetwork::NeuralNetwork(int _i, int _j, int _k): i(_i), j(_j), k(_k) {
-    std::default_random_engine generator;
-    std::uniform_real_distribution<double> distribution(-0.01, 0.01);
+    default_random_engine generator;
+    uniform_real_distribution<double> distribution(-0.01, 0.01);
 
     weight_ji = new double*[j];
     for(int tj = 0; tj < j; tj++) {
@@ -65,6 +65,9 @@ void NeuralNetwork::GetOutput(double input[], double output[]) {
 }
 
 void NeuralNetwork::PrintWeight() {
+    cout << fixed;
+    cout.precision(6);
+
     cout << "Weight_ji" << endl;
     for(int tj = 0; tj < j; tj++)
         for(int ti = 0; ti <= i; ti++)
