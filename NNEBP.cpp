@@ -198,5 +198,88 @@ NeuralNetwork::~NeuralNetwork() {
 }
 
 int main() {
+    // Setup training data
+    double **input_n = new double*[11];
+    double **output_n = new double*[11];
+    for(int i = 0; i < 11; i++) {
+        input_n[i] = new double[1];
+        output_n[i] = new double[1];
+    }
+    input_n[0][0] = 0.00;   output_n[0][0] = 0.00;
+    input_n[1][0] = 0.10;   output_n[1][0] = 0.09;
+    input_n[2][0] = 0.20;   output_n[2][0] = 0.16;
+    input_n[3][0] = 0.30;   output_n[3][0] = 0.21;
+    input_n[4][0] = 0.40;   output_n[4][0] = 0.24;
+    input_n[5][0] = 0.50;   output_n[5][0] = 0.25;
+    input_n[6][0] = 0.60;   output_n[6][0] = 0.24;
+    input_n[7][0] = 0.70;   output_n[7][0] = 0.21;
+    input_n[8][0] = 0.80;   output_n[8][0] = 0.16;
+    input_n[9][0] = 0.90;   output_n[9][0] = 0.09;
+    input_n[10][0] = 1.00;  output_n[10][0] = 0.00;
+    cout << "Training data: f(x) = x(1-x)" << endl;
+    for(int i = 0; i < 11; i++) {
+        cout.setf(ios::fixed);
+        cout << "f(" << setw(4) << setprecision(2) << input_n[i][0];
+        cout << ") = " << setw(4) << setprecision(2) << output_n[i][0] << endl;
+        cout.unsetf(ios::fixed);
+    }
+    cout << endl << endl;
+
+    // Initialize neural network
+    NeuralNetwork nn(1, 4, 1);
+        // Input  layer (1 input neuron)
+        // Hidden layer (4 neurons)
+        // Output layer (1 output neuron)
+
+    // Weights before training
+    cout << "Weights before training" << endl << endl;
+    nn.PrintWeight();
+    cout << endl;
+
+    // Neural network output before training
+    cout << "Neural network output before training" << endl;
+    double output[1];
+    for(int i = 0; i < 11; i++) {
+        nn.GetOutput(input_n[i], output);
+        cout.setf(ios::fixed);
+        cout << "f(" << setw(4) << setprecision(2) << input_n[i][0];
+        cout << ") = " << setw(4) << setprecision(2) << output[0] << endl;
+        cout.unsetf(ios::fixed);
+    }
+    cout << endl << endl;
+
+    // Neural network training
+    cout << "Training neural network" << endl << endl;
+    nn.TrainNetwork(11, input_n, output_n, 0.7, 500000);
+    cout << endl;
+
+    // Weights after training
+    cout << "Weights after training" << endl << endl;
+    nn.PrintWeight();
+    cout << endl;
+
+    // Neural network output after training
+    cout << "Neural network output after training" << endl;
+    for(int i = 0; i < 11; i++) {
+        nn.GetOutput(input_n[i], output);
+        cout.setf(ios::fixed);
+        cout << "f(" << setw(4) << setprecision(2) << input_n[i][0];
+        cout << ") = " << setw(4) << setprecision(2) << output[0] << endl;
+        cout.unsetf(ios::fixed);
+    }
+    cout << endl << endl;
+
+    // Neural network output for test data
+    cout << "Neural network output for test data" << endl;
+    for(int i = 0; i <= 100; i+=5) {
+        input_n[0][0] = i / (double)100;
+        nn.GetOutput(input_n[0], output);
+        cout.setf(ios::fixed);
+        cout << "f(" << setw(4) << setprecision(2) << input_n[0][0];
+        cout << ") = " << setw(4) << setprecision(2) << output[0] << endl;
+        cout.unsetf(ios::fixed);
+    }
+    cout << endl;
+
     return 0;
 }
