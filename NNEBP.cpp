@@ -1,7 +1,8 @@
 #include <iostream>
 #include <iomanip>
 #include <complex>
-#include <random>
+#include <random> // For c++11
+//#include <stdlib.h> // Under c++11
 
 using namespace std;
 
@@ -23,21 +24,23 @@ public:
 };
 
 NeuralNetwork::NeuralNetwork(int _i, int _j, int _k): i(_i), j(_j), k(_k) {
-    default_random_engine generator;
-    uniform_real_distribution<double> distribution(-0.01, 0.01);
+    default_random_engine generator; // For c++11
+    uniform_real_distribution<double> distribution(-0.10, 0.10); // For c++11
 
     weight_ji = new double*[j];
     for(int tj = 0; tj < j; tj++) {
         weight_ji[tj] = new double[i+1];
         for(int ti = 0; ti <= i; ti++)
-            weight_ji[tj][ti] = distribution(generator);
+            weight_ji[tj][ti] = distribution(generator); // For c++11
+            //weight_ji[tj][ti] = (rand()%10000-5000)/(double)100000; // Under c++11
     }
 
     weight_kj = new double*[k];
     for(int tk = 0; tk < k; tk++) {
         weight_kj[tk] = new double[j+1];
         for(int tj = 0; tj <= j; tj++)
-            weight_kj[tk][tj] = distribution(generator);
+            weight_kj[tk][tj] = distribution(generator); // For c++11
+            //weight_kj[tk][tj] = (rand()%10000-5000)/(double)100000; // Under c++11
     }
 }
 
