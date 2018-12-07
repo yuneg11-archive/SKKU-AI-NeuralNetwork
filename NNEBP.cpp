@@ -68,20 +68,25 @@ void NeuralNetwork::GetOutput(double input[], double output[]) {
 }
 
 void NeuralNetwork::PrintWeight() {
-    cout << fixed;
-    cout.precision(6);
+    cout.setf(ios::fixed);
 
     cout << "Weight_ji" << endl;
     for(int tj = 0; tj < j; tj++)
-        for(int ti = 0; ti <= i; ti++)
-            cout << weight_ji[tj][ti] << " ";
+        for(int ti = 0; ti <= i; ti++) {
+            cout << "[" << tj << "," << ti << "] ";
+            cout << setprecision(6) << setw(9) << weight_ji[tj][ti] << " " << endl;
+        }
     cout << endl;
 
     cout << "Weight_kj" << endl;
     for(int tk = 0; tk < k; tk++)
-        for(int tj = 0; tj <= j; tj++)
-            cout << weight_kj[tk][tj] << " ";
+        for(int tj = 0; tj <= j; tj++) {
+            cout << "[" << tk << "," << tj << "] ";
+            cout << setprecision(6) << setw(9) << weight_kj[tk][tj] << " " << endl;
+        }
     cout << endl;
+
+    cout.unsetf(ios::fixed);
 }
 
 void NeuralNetwork::TrainNetwork(int n, double **input_n, double **output_n,
