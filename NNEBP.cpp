@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <complex>
 #include <random>
 
@@ -97,7 +98,13 @@ void NeuralNetwork::TrainNetwork(int n, double **input_n, double **output_n,
     double *o_k = new double[k];
     double *tmoo1mo = new double[k]; // Common part (t_k-o_k)o_k(1-o_k)
 
+    cout << "Iteration | Error" << endl;
+    cout << "--------------------" << endl;
+    cout.setf(ios::fixed);
+
     for(int iter = 1; iter <= iteration; iter++) {
+        double error = 0;
+
         for(int tj = 0; tj < j; tj++)
             for(int ti = 0; ti <= i; ti++)
                 dEdw_ji[tj][ti] = 0;
@@ -117,6 +124,7 @@ void NeuralNetwork::TrainNetwork(int n, double **input_n, double **output_n,
             // Error Back Propagation
             for(int tk = 0; tk < k; tk++) {
                 tmoo1mo[tk] = (output_n[tn][tk] - o_k[tk]) * o_k[tk] * (1 - o_k[tk]);
+                error += abs(output_n[tn][tk] - o_k[tk]);
                 for(int tj = 0; tj < j; tj++)
                     dEdw_kj[tk][tj] += -tmoo1mo[tk] * h_j[tj];
                 dEdw_kj[tk][j] += -tmoo1mo[tk];
@@ -141,7 +149,12 @@ void NeuralNetwork::TrainNetwork(int n, double **input_n, double **output_n,
         for(int tk = 0; tk < k; tk++)
             for(int tj = 0; tj <= j; tj++)
                 weight_kj[tk][tj] -= learning_rate * dEdw_kj[tk][tj];
+
+        if(iter % (iteration/100) == 0)
+            cout << setw(9) << iter << " | " << setprecision(6) << setw(8) << error << endl;
     }
+    cout.unsetf(ios::fixed);
+    cout << endl;
 
     delete [] tmoo1mo;
     delete [] o_k;
